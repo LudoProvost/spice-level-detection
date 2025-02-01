@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spice_level_detection"
+version = "0.1.0"
+description = "A library to detect spice level in a frame using edge detection."
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+authors = [
+    {name = "Ludovic Provost", email = "ludovic.provost8@gmail.com"}
+]
+dependencies = [
+    "opencv-python",
+    "numpy"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/LudoProvost/spice-level-detection"
