@@ -2,19 +2,11 @@ import cv2
 import numpy as np
 from .bound_box import BoundBox
 
-def get_spice_level(cap, bound_box: BoundBox, reference_image_path="ref-bg.jpg", threshold=45, density_threshold=40):
+def get_spice_level(frame, bound_box: BoundBox, reference_image_path="ref-bg.jpg", threshold=45, density_threshold=40):
     """Calculate the spice level percentage based on the difference between the current frame and the reference image."""
     reference_image = cv2.imread(reference_image_path)
     if reference_image is None:
         raise RuntimeError(f"Error: Could not read reference image from {reference_image_path}")
-
-    if not cap.isOpened():
-        raise RuntimeError("Error: Could not open webcam.")
-
-    ret, frame = cap.read()
-    if not ret:
-        # cap.release()
-        raise RuntimeError("Error: Could not read frame.")
 
     roi = frame[bound_box.y1:bound_box.y2, bound_box.x1:bound_box.x2]
     diff_red = cv2.absdiff(roi[:, :, 2], reference_image[:, :, 2])
