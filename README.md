@@ -26,7 +26,7 @@ py -m pip install --index-url https://test.pypi.org/simple/ --no-deps --upgrade 
 Calculate the spice level percentage based on the difference between the current frame and the reference image.
 
 #### Parameters:
-- cap: cv2.VideoCapture object
+- frame: image object received from cap.read()
 - bound_box: BoundBox object defining the region of interest
 - reference_image_path: Path to the reference image
 - threshold: Threshold for detecting differences in color channels
@@ -37,7 +37,7 @@ Calculate the spice level percentage based on the difference between the current
 
 #### Function implementation:
 ```python
-def get_spice_level(cap, bound_box: BoundBox, reference_image_path="ref-bg.jpg", threshold=45, density_threshold=40) -> int:
+def get_spice_level(frame, bound_box: BoundBox, reference_image_path="ref-bg.jpg", threshold=45, density_threshold=40) -> int:
 ```
 
 ### get_empty_bg
@@ -71,6 +71,38 @@ Look for a QR code in the video capture and return the data from the QR code. Re
 def read_qr_code(cap) -> str:
 ```
 
+### get_alignment
+returns either a BoundBox corresponding to the location in the frame which is the most similar to the reference image passed, or a tuple (dx, dy) which corresponds to the difference between the center of the frame and the center of the best match found.
+
+#### Parameters:
+- cap: cv2.VideoCapture object
+- reference_image_path: Path to the reference image
+- getBoundBox: Boolean flag to either get the BoundBox object, or the dx/dy tuple
+
+#### Returns:
+- BoundBox: best match of reference image in frame (if getBoundBox = True)
+- (dx, dy): tuple corresponding to the difference between the center of the frame and the center of the best match found (if getBoundBox = False)
+
+#### Function implementation:
+```python
+def get_alignment(cap, reference_image_path="ref-bg.jpg", getBoundBox=False) -> BoundBox or (int, int):
+```
+
+### rotate_image
+returns the rotated frame passed as a parameter. 
+
+#### Parameters:
+- frame: Image or frame that should be rotated
+- direction: either 'cw' or 'ccw' to rotate the image 90 degrees clockwise or counter-clockwise
+
+#### Returns:
+- frame (image): the appropriately rotated frame 
+
+#### Function implementation:
+```python
+def rotate_image(frame, direction) -> frame:
+```
+
 ### BoundBox
 A class to represent a bounding box.
 
@@ -92,7 +124,7 @@ if not cap.isOpened():
     raise RuntimeError("Error: Could not open webcam.")
 
 # Define bounding box
-bound_box = BoundBox(70, 25, 386, 369)
+bound_box = get_alignment(cap, "ref-bg.jpg", getBoundBox=True)
 
 # Get spice level
 spice_level = get_spice_level(cap, bound_box)
